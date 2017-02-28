@@ -1,7 +1,5 @@
 package com.example.cezar.android_login_client;
 
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,16 +10,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
+
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 public class ShowUsers extends AppCompatActivity {
 
@@ -34,25 +27,6 @@ public class ShowUsers extends AppCompatActivity {
     class RequestBlock implements Runnable
     {
         JSONArray jArr;
-        class Block implements Runnable {
-            RequestBlock parent;
-
-            public RequestBlock getParent()
-            {
-                return  parent;
-            }
-
-            Block(RequestBlock parent) {
-                this.parent = parent;
-            }
-
-
-            @Override
-            public void run() {
-
-            }
-        }
-        Block block;
 
         public void initJson(JSONArray jArr) {
             this.jArr = jArr;
@@ -65,13 +39,10 @@ public class ShowUsers extends AppCompatActivity {
 
         @Override
         public void run() {
-            block.run();
         }
 
         public RequestBlock(/*Block block*/)
         {
-            /*this.block = block;
-            this.block.parent = this;*/
         }
     }
 
