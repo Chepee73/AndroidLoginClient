@@ -1,7 +1,7 @@
 package com.example.cezar.android_login_client;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,11 +10,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import utils.RequestBlock;
 
 public class ShowUsers extends AppCompatActivity {
 
@@ -23,29 +24,6 @@ public class ShowUsers extends AppCompatActivity {
 
     TextView userTxt;
     TextView passTxt;
-
-    class RequestBlock implements Runnable
-    {
-        JSONArray jArr;
-
-        public void initJson(JSONArray jArr) {
-            this.jArr = jArr;
-        }
-
-        public JSONArray getjArr()
-        {
-            return jArr;
-        }
-
-        @Override
-        public void run() {
-        }
-
-        public RequestBlock(/*Block block*/)
-        {
-        }
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +38,7 @@ public class ShowUsers extends AppCompatActivity {
         userTxt = (TextView) findViewById(R.id.userTxt);
         passTxt = (TextView) findViewById(R.id.passwordTxt);
 
-        getJSON(API_URL, "users", Request.Method.GET, new RequestBlock(){
+        getJSON(API_URL, "users", Request.Method.GET, new RequestBlock() {
             @Override
             public void run() {
                 try {
@@ -76,7 +54,7 @@ public class ShowUsers extends AppCompatActivity {
 
     public JSONArray getJSON(String url, String endpoint, int method, final RequestBlock block) {
         final JSONArray[] array = new JSONArray[1];
-        ;
+
         JsonArrayRequest jsArrRequest = new JsonArrayRequest
                 (method, url + endpoint, null, new Response.Listener<JSONArray>() {
                     @Override
