@@ -1,5 +1,6 @@
 package com.example.cezar.android_login_client;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -16,37 +17,45 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import utils.RequestBlock;
+import utils.RequestQueueSingleton;
+import utils.RequestUtils;
 
-public class ShowUsers extends AppCompatActivity {
+import static utils.RequestUtils.API_URL;
+import static utils.RequestUtils.sendRequest;
 
-    String API_URL = "https://boiling-taiga-37825.herokuapp.com/";
-    RequestQueue queue;
-
-    JSONArray jArr;
+public class ShowUsers extends AppCompatActivity
+{
 
     TextView userTxt;
     TextView passTxt;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_users);
+        RequestQueueSingleton.getInstance(this);
     }
 
-    public void onClickSearch(View view) {
+    public void onClickSearch(View view)
+    {
         System.out.println("Entered onClickSearch");
-        queue = Volley.newRequestQueue(this);
 
         userTxt = (TextView) findViewById(R.id.userTxt);
-        passTxt = (TextView) findViewById(R.id.passwordTxt);
 
-        sendRequest(API_URL, "users", Request.Method.GET, new RequestBlock() {
+        JSONArray jArr = null;
+
+        sendRequest(API_URL, "users", jArr, Request.Method.GET, new RequestBlock()
+        {
             @Override
-            public void run() {
-                try {
-                    userTxt.setText(jArr.getJSONObject(0).getString("email"));
-                    passTxt.setText(jArr.getJSONObject(0).getString("password"));
-                } catch (JSONException e) {
+            public void run()
+            {
+                try
+                {
+                    for (int i = 0; i < RequestUtils.getjArr().length(); i++)
+                        userTxt.append(RequestUtils.getjArr().getJSONObject(i).getString("email") + "\n");
+                } catch (JSONException e)
+                {
                     e.printStackTrace();
                 }
 
@@ -54,24 +63,9 @@ public class ShowUsers extends AppCompatActivity {
         });
     }
 
-    public void sendRequest(String url, String endpoint, int method, final RequestBlock block) {
-        JsonArrayRequest jsArrRequest = new JsonArrayRequest
-                (method, url + endpoint, null, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        jArr = response;
-                        System.out.println(jArr);
-                        if (block != null)
-                        {
-                            block.run();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        System.out.println(error);
-                    }
-                });
-        queue.add(jsArrRequest);
+    public void addUser(View view)
+    {
+        Intent intent = new Intent(this, AddUser.class);
+        startActivity(intent);
     }
 }
