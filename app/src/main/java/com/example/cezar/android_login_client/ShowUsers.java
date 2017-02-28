@@ -22,6 +22,8 @@ public class ShowUsers extends AppCompatActivity {
     String API_URL = "https://boiling-taiga-37825.herokuapp.com/";
     RequestQueue queue;
 
+    JSONArray jArr;
+
     TextView userTxt;
     TextView passTxt;
 
@@ -38,12 +40,12 @@ public class ShowUsers extends AppCompatActivity {
         userTxt = (TextView) findViewById(R.id.userTxt);
         passTxt = (TextView) findViewById(R.id.passwordTxt);
 
-        getJSON(API_URL, "users", Request.Method.GET, new RequestBlock() {
+        sendRequest(API_URL, "users", Request.Method.GET, new RequestBlock() {
             @Override
             public void run() {
                 try {
-                    userTxt.setText(this.getjArr().getJSONObject(0).getString("email"));
-                    passTxt.setText(this.getjArr().getJSONObject(0).getString("password"));
+                    userTxt.setText(jArr.getJSONObject(0).getString("email"));
+                    passTxt.setText(jArr.getJSONObject(0).getString("password"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -52,16 +54,17 @@ public class ShowUsers extends AppCompatActivity {
         });
     }
 
-    public JSONArray getJSON(String url, String endpoint, int method, final RequestBlock block) {
-        final JSONArray[] array = new JSONArray[1];
-
+    public void sendRequest(String url, String endpoint, int method, final RequestBlock block) {
         JsonArrayRequest jsArrRequest = new JsonArrayRequest
                 (method, url + endpoint, null, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        array[0] = response;
-                        block.initJson(response);
-                        block.run();
+                        jArr = response;
+                        System.out.println(jArr);
+                        if (block != null)
+                        {
+                            block.run();
+                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -70,6 +73,5 @@ public class ShowUsers extends AppCompatActivity {
                     }
                 });
         queue.add(jsArrRequest);
-        return array[0];
     }
 }
